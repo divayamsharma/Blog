@@ -15,12 +15,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
@@ -29,7 +32,7 @@ jobs:
         bundler-cache: false
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
@@ -42,8 +45,10 @@ jobs:
     - name: Generate graph data
       run: npm run graph
 
-    - name: Build site
+    - name: Build site with Jekyll
       run: jekyll build --strict_front_matter
+      env:
+        JEKYLL_ENV: production
 
     - name: Optimize assets
       run: |
@@ -51,11 +56,11 @@ jobs:
         for file in _site/assets/css/*.css; do csso "$file" -o "$file"; done
         for file in _site/assets/js/*.js; do terser "$file" -o "$file"; done
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
+    - name: Upload artifact to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
       with:
         path: './_site'
 
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
