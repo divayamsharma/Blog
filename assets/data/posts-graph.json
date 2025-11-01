@@ -1,0 +1,65 @@
+{
+  "nodes": [
+    {
+      "id": "post-2024-01-01-example-post",
+      "label": "Getting Started with This Blog",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024/01/01/example-post/"
+    },
+    {
+      "id": "tag-tutorial",
+      "label": "tutorial",
+      "type": "tag",
+      "size": 6,
+      "color": "#ffffff",
+      "url": "/blog/?tag=tutorial"
+    },
+    {
+      "id": "tag-blog",
+      "label": "blog",
+      "type": "tag",
+      "size": 6,
+      "color": "#ffffff",
+      "url": "/blog/?tag=blog"
+    },
+    {
+      "id": "tag-markdown",
+      "label": "markdown",
+      "type": "tag",
+      "size": 6,
+      "color": "#ffffff",
+      "url": "/blog/?tag=markdown"
+    },
+    {
+      "id": "category-getting-started",
+      "label": "getting-started",
+      "type": "category",
+      "size": 7,
+      "color": "#4ecdc4",
+      "url": "/blog/?category=getting-started"
+    }
+  ],
+  "links": [
+    {
+      "source": "post-2024-01-01-example-post",
+      "target": "tag-tutorial"
+    },
+    {
+      "source": "post-2024-01-01-example-post",
+      "target": "tag-blog"
+    },
+    {
+      "source": "post-2024-01-01-example-post",
+      "target": "tag-markdown"
+    },
+    {
+      "source": "post-2024-01-01-example-post",
+      "target": "category-getting-started"
+    }
+  ],
+  "generated": "2024-01-01T00:00:00.000Z",
+  "postCount": 1,
+  "tagCount": 3
+}

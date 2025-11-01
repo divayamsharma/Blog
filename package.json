@@ -1,0 +1,32 @@
+{
+  "name": "dankoe-blog",
+  "version": "1.0.0",
+  "description": "A high-performance blog inspired by Dan Koe's design",
+  "main": "index.js",
+  "scripts": {
+    "build": "bundle exec jekyll build",
+    "serve": "bundle exec jekyll serve --livereload",
+    "graph": "node scripts/generate-graph-data.js",
+    "prebuild": "npm run graph",
+    "clean": "bundle exec jekyll clean",
+    "test": "bundle exec jekyll build --strict_front_matter",
+    "optimize": "npm run build && npm run optimize:css && npm run optimize:js",
+    "optimize:css": "csso _site/assets/css/style.css -o _site/assets/css/style.css",
+    "optimize:js": "terser _site/assets/js/main.js -o _site/assets/js/main.js && terser _site/assets/js/knowledge-graph.js -o _site/assets/js/knowledge-graph.js"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "csso-cli": "^4.0.1",
+    "terser": "^5.20.0"
+  },
+  "keywords": [
+    "jekyll",
+    "blog",
+    "github-pages",
+    "knowledge-graph"
+  ],
+  "author": "",
+  "license": "MIT"
+}

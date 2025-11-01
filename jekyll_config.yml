@@ -1,0 +1,46 @@
+# Jekyll configuration for GitHub Pages blog
+
+title: Your Name
+description: Write your tagline here
+url: "https://yourusername.github.io"
+baseurl: ""
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Blog collections
+collections:
+  posts:
+    output: true
+    permalink: /:categories/:year/:month/:day/:title/
+
+# Markdown processing
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+
+# Pagination
+paginate: 10
+paginate_path: /blog/page:num
+
+# Site metadata
+author: Your Name
+social:
+  links:
+    - https://twitter.com/yourhandle
+    - https://github.com/yourhandle
+    - https://linkedin.com/in/yourhandle
+
+# Performance optimizations
+exclude:
+  - .sass-cache/
+  - .jekyll-cache/
+  - node_modules/
+  - Gemfile
+  - Gemfile.lock

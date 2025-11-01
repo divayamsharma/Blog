@@ -1,0 +1,54 @@
+name: Build and Deploy Blog
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.1
+        bundler-cache: true
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        bundle install
+        npm install
+
+    - name: Generate graph data
+      run: npm run graph
+
+    - name: Build site
+      run: bundle exec jekyll build --strict_front_matter
+
+    - name: Optimize assets
+      run: |
+        npm install -g csso-cli terser
+        for file in _site/assets/css/*.css; do csso "$file" -o "$file"; done
+        for file in _site/assets/js/*.js; do terser "$file" -o "$file"; done
+
+    - name: Test build
+      run: |
+        bundle exec htmlproofer ./_site --disable-external --allow-hash-href
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_site
+        cname: yourdomain.com  # Optional: uncomment and set your custom domain
