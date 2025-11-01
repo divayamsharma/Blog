@@ -16,8 +16,8 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.1
-        bundler-cache: true
+        ruby-version: '3.4'
+        bundler-cache: false
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -27,14 +27,14 @@ jobs:
 
     - name: Install dependencies
       run: |
-        bundle install
+        gem install jekyll
         npm install
 
     - name: Generate graph data
       run: npm run graph
 
     - name: Build site
-      run: bundle exec jekyll build --strict_front_matter
+      run: jekyll build --strict_front_matter
 
     - name: Optimize assets
       run: |
