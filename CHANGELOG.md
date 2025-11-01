@@ -166,6 +166,34 @@ git push origin main
 
 ---
 
+## [Deploy Script Created] - 2024-11-01
+
+### Created: `deploy.sh`
+
+**Reason:** Simplify the process of updating files on GitHub. No need to manually run git commands every time.
+
+**What it does:**
+1. Prompts user for commit message: "What changes did you make?"
+2. Runs `git add .`
+3. Runs `git commit -m "your message"`
+4. Runs `git push origin main`
+5. Shows success/error status
+
+**How to use:**
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+**Benefits:**
+- ✅ One command instead of 3
+- ✅ Interactive prompt for commit message
+- ✅ Error handling built-in
+- ✅ Clear success/failure messages
+- ✅ Works for any file changes
+
+---
+
 ## Future Changes Log
 
 *(New changes will be added below)*
@@ -173,4 +201,4 @@ git push origin main
 ---
 
 **Last Updated:** 2024-11-01
-**Status:** Ready for GitHub Pages deployment
+**Status:** Ready for GitHub Pages deployment + Deploy Script Created
