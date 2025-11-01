@@ -209,7 +209,13 @@ npm run optimize # Full build with CSS/JS minification
 
 **Obsidian:** Can write posts directly in Obsidian and push to GitHub
 **GitHub Pages:** Free hosting, CDN-backed, auto-HTTPS
-**GitHub Actions:** Fully automated CI/CD, no external services needed
+  - Site deployed at: https://divayamsharma.github.io/Blog/
+  - Uses baseurl: `/Blog` (project subdirectory, not user site)
+  - All links must use `{{ site.baseurl }}` filter for proper routing
+**GitHub Actions:** Fully automated CI/CD using official GitHub Pages deployment
+  - Workflow: `.github/workflows/build-and-deploy.yml`
+  - Uses `actions/upload-pages-artifact@v3` and `actions/deploy-pages@v4`
+  - Proper permissions: `pages: write`, `id-token: write`
 **Custom Domain:** Optional (update DNS + CNAME in GitHub Pages settings)
 
 ## File Reference
@@ -223,6 +229,13 @@ npm run optimize # Full build with CSS/JS minification
 - `_layouts/` - HTML structure
 - `_includes/` - Components
 - `scripts/generate-graph-data.js` - Graph generation logic
+
+**Important - Baseurl in Links:**
+When editing templates, ALWAYS use one of these patterns for links:
+- Navigation: `href="{{ site.baseurl }}/blog"` (uses site.baseurl variable)
+- Assets: `href="{{ '/assets/css/style.css' | relative_url }}"` (uses relative_url filter)
+- Post links: `href="{{ post.url | relative_url }}"` (filters post URLs)
+- DO NOT use hardcoded absolute paths like `href="/blog"` - they will break in subdirectories!
 
 **Never Edit (Auto-Generated):**
 - `_site/` - Build output

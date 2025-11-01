@@ -4,6 +4,70 @@ All changes made to the Dan Koe Blog project will be documented here.
 
 ---
 
+## [GitHub Pages Deployment Fixed] - 2025-11-02
+
+### Issue
+GitHub Pages showing 404 errors when clicking navigation links or blog posts. Site was deployed but all internal links were broken.
+
+### Root Causes & Fixes
+
+#### 1. Configuration Issue - `_config.yml`
+**Problem:** Placeholder values in config (title: "Your Name", url: "https://yourusername.github.io")
+**Solution:** Updated with actual values:
+- `title: Divayam's Blog`
+- `url: https://divayamsharma.github.io`
+- `baseurl: /Blog` (critical for subdirectory deployment)
+
+#### 2. GitHub Actions Permissions - `.github/workflows/build-and-deploy.yml`
+**Problem:** Using outdated `peaceiris/actions-gh-pages@v3` action causing 403 permission errors
+**Solution:** Replaced with official GitHub Pages actions:
+- Added permissions block: `pages: write`, `id-token: write`, `contents: read`
+- Changed to `actions/upload-pages-artifact@v3`
+- Changed to `actions/deploy-pages@v4`
+- Added environment configuration for GitHub Pages
+- Set `JEKYLL_ENV=production` for proper build
+
+#### 3. Navigation Links - `_includes/header.html` & `_includes/footer.html`
+**Problem:** Hardcoded links without baseurl: `href="/blog"`, `href="/about"`, etc.
+**Solution:** Updated to use baseurl variable:
+```html
+<a href="{{ site.baseurl }}/">Home</a>
+<a href="{{ site.baseurl }}/blog">Blog</a>
+<a href="{{ site.baseurl }}/graph">Knowledge Graph</a>
+<a href="{{ site.baseurl }}/about">About</a>
+```
+
+#### 4. Asset Links - `_layouts/default.html`
+**Problem:** Favicon used hardcoded path: `href="/assets/favicon.svg"`
+**Solution:** Updated to use relative_url filter:
+```html
+<link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+```
+
+#### 5. Post Links - `index.md`, `blog.md`, `_layouts/post.html`
+**Problem:** Post URLs generated without baseurl: `href="{{ post.url }}"`
+**Solution:** Updated to use relative_url filter:
+```html
+<a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+```
+
+### Verification
+✅ All pages now accessible:
+- Homepage: https://divayamsharma.github.io/Blog/ (HTTP 200)
+- Blog: https://divayamsharma.github.io/Blog/blog/ (HTTP 200)
+- About: https://divayamsharma.github.io/Blog/about/ (HTTP 200)
+- Graph: https://divayamsharma.github.io/Blog/graph/ (HTTP 200)
+- Posts: https://divayamsharma.github.io/Blog/self-improvement/2024/01/22/deliberate-practice/ (HTTP 200)
+
+### Critical Learning
+GitHub Pages deployed at project subdirectory (`/Blog/`) requires:
+1. `baseurl: /Blog` in `_config.yml`
+2. All navigation links use `{{ site.baseurl }}/path`
+3. All asset/post links use `| relative_url` filter
+4. Never use hardcoded absolute paths like `href="/page"`
+
+---
+
 ## [Initial Setup] - 2024-11-01
 
 ### Created Files (28 total)
@@ -194,11 +258,32 @@ chmod +x deploy.sh
 
 ---
 
+## Deployment Status Summary
+
+### Current Status (2025-11-02)
+✅ **FULLY DEPLOYED AND WORKING**
+
+- Site URL: https://divayamsharma.github.io/Blog/
+- All pages accessible (HTTP 200)
+- All navigation working
+- All post links working
+- GitHub Actions CI/CD fully functional
+- Automatic builds on git push
+
+### Previous Status (2024-11-01)
+- ✅ All files created
+- ✅ Configuration complete
+- ✅ Deploy script created
+- ❌ GitHub Actions had permission errors (NOW FIXED)
+- ❌ Links breaking on navigation (NOW FIXED)
+
+---
+
 ## Future Changes Log
 
 *(New changes will be added below)*
 
 ---
 
-**Last Updated:** 2024-11-01
-**Status:** Ready for GitHub Pages deployment + Deploy Script Created
+**Last Updated:** 2025-11-02
+**Status:** ✅ PRODUCTION READY - All systems deployed and fully operational
