@@ -4,12 +4,11 @@
   "description": "A high-performance blog inspired by Dan Koe's design",
   "main": "index.js",
   "scripts": {
-    "build": "bundle exec jekyll build",
-    "serve": "bundle exec jekyll serve --livereload",
+    "build": "npm run graph && /opt/homebrew/lib/ruby/gems/3.4.0/bin/jekyll build",
+    "serve": "npm run graph && /opt/homebrew/lib/ruby/gems/3.4.0/bin/jekyll serve",
     "graph": "node scripts/generate-graph-data.js",
-    "prebuild": "npm run graph",
-    "clean": "bundle exec jekyll clean",
-    "test": "bundle exec jekyll build --strict_front_matter",
+    "clean": "/opt/homebrew/lib/ruby/gems/3.4.0/bin/jekyll clean",
+    "test": "npm run graph && /opt/homebrew/lib/ruby/gems/3.4.0/bin/jekyll build --strict_front_matter",
     "optimize": "npm run build && npm run optimize:css && npm run optimize:js",
     "optimize:css": "csso _site/assets/css/style.css -o _site/assets/css/style.css",
     "optimize:js": "terser _site/assets/js/main.js -o _site/assets/js/main.js && terser _site/assets/js/knowledge-graph.js -o _site/assets/js/knowledge-graph.js"
