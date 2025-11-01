@@ -1,9 +1,9 @@
 # Jekyll configuration for GitHub Pages blog
 
-title: Your Name
-description: Write your tagline here
-url: "https://yourusername.github.io"
-baseurl: ""
+title: Divayam's Blog
+description: A personal blog and knowledge graph
+url: "https://divayamsharma.github.io"
+baseurl: "/Blog"
 
 # Build settings
 plugins:
@@ -29,12 +29,10 @@ paginate: 10
 paginate_path: /blog/page:num
 
 # Site metadata
-author: Your Name
+author: Divayam Sharma
 social:
   links:
-    - https://twitter.com/yourhandle
-    - https://github.com/yourhandle
-    - https://linkedin.com/in/yourhandle
+    - https://github.com/divayamsharma
 
 # Performance optimizations
 exclude:
