@@ -5,7 +5,7 @@ date: 2024-01-19 09:00:00 +0000
 categories: [self-improvement]
 tags: [productivity, discipline, learning]
 author: Dan Koe
-image: /assets/images/deep-work.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/06/featured-111-1536x864.jpg.webp
 excerpt: "Deep, focused work is increasingly rare and increasingly valuable. Learn how to reclaim your ability to concentrate."
 reading_time: 6
 ---

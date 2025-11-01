@@ -5,7 +5,7 @@ date: 2024-01-17 09:00:00 +0000
 categories: [self-improvement]
 tags: [exercise, mindset, discipline]
 author: Dan Koe
-image: /assets/images/exercise.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/06/thedankoe_create_white_line_art_on_a_black_background_of_stev_8ab4ce2b-c468-43bb-a459-b8f27e061f77_2.png.webp
 excerpt: "Physical training is mental training. The discipline you build in the gym translates to every area of your life."
 reading_time: 7
 ---

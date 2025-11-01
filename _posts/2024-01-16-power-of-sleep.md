@@ -5,7 +5,7 @@ date: 2024-01-16 09:00:00 +0000
 categories: [self-improvement]
 tags: [sleep, recovery, habits]
 author: Dan Koe
-image: /assets/images/sleep.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/06/featured-1.png.webp
 excerpt: "Sleep isn't laziness. It's the foundation of physical performance, mental clarity, and emotional resilience."
 reading_time: 5
 ---

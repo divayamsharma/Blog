@@ -5,7 +5,7 @@ date: 2024-01-20 09:00:00 +0000
 categories: [self-improvement]
 tags: [habits, growth, consistency]
 author: Dan Koe
-image: /assets/images/compound-effect.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/07/featured-1536x864.jpg.webp
 excerpt: "Tiny, consistent improvements compound into extraordinary results. This is the secret of all high-performers."
 reading_time: 5
 ---

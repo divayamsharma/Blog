@@ -5,7 +5,7 @@ date: 2024-01-18 09:00:00 +0000
 categories: [self-improvement]
 tags: [nutrition, mindset, health]
 author: Dan Koe
-image: /assets/images/nutrition.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/06/featured-2.png.webp
 excerpt: "Your diet isn't just about your waistline. It's a primary driver of cognitive function, mood, and mental clarity."
 reading_time: 6
 ---

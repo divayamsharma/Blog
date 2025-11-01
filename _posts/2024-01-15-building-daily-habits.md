@@ -5,7 +5,7 @@ date: 2024-01-15 09:00:00 +0000
 categories: [self-improvement]
 tags: [habits, discipline, consistency]
 author: Dan Koe
-image: /assets/images/habits.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/06/featured.png.webp
 excerpt: "Master the art of building sustainable daily habits that compound over time to transform your life."
 reading_time: 6
 ---

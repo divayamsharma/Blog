@@ -5,7 +5,7 @@ date: 2024-01-22 09:00:00 +0000
 categories: [self-improvement]
 tags: [learning, growth, discipline]
 author: Dan Koe
-image: /assets/images/deliberate-practice.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/08/featured-1536x864.jpg.webp
 excerpt: "Not all practice is created equal. Deliberate practice is the key to rapid skill development and mastery."
 reading_time: 6
 ---

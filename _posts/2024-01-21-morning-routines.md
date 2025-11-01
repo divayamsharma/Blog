@@ -5,7 +5,7 @@ date: 2024-01-21 09:00:00 +0000
 categories: [self-improvement]
 tags: [habits, productivity, discipline]
 author: Dan Koe
-image: /assets/images/morning-routine.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/07/featured-2-1536x864.jpg.webp
 excerpt: "How you spend your morning determines the quality of your entire day. Master the morning, master your life."
 reading_time: 7
 ---

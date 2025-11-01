@@ -5,7 +5,7 @@ date: 2024-01-01 10:00:00 +0000
 categories: [getting-started]
 tags: [tutorial, blog, markdown]
 author: Your Name
-image: /assets/images/placeholder.jpg
+image: https://thedankoe.com/wp-content/uploads/2025/05/thedankoe_create_white_line_art_on_a_black_background_of_a_gl_2642575d-9192-413e-ab15-734ef5753334_3.png
 excerpt: "Learn how to use this blog and create your first post."
 reading_time: 5
 ---
