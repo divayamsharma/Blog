@@ -11,7 +11,9 @@
       "Bash(bundle install:*)",
       "Bash(BUNDLE_IGNORE_CONFIG=true bundle install:*)",
       "Bash(timeout 5 npm run serve:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
