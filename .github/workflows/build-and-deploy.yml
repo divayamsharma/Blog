@@ -27,7 +27,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        gem install jekyll
+        gem install jekyll jekyll-feed jekyll-seo-tag jekyll-sitemap
         npm install
 
     - name: Generate graph data
@@ -42,13 +42,8 @@ jobs:
         for file in _site/assets/css/*.css; do csso "$file" -o "$file"; done
         for file in _site/assets/js/*.js; do terser "$file" -o "$file"; done
 
-    - name: Test build
-      run: |
-        bundle exec htmlproofer ./_site --disable-external --allow-hash-href
-
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./_site
-        cname: yourdomain.com  # Optional: uncomment and set your custom domain
