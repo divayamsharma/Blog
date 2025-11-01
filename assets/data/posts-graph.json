@@ -6,7 +6,7 @@
       "type": "post",
       "size": 8,
       "color": "#ffffff",
-      "url": "/blog/2024/01/01/example-post/"
+      "url": "/blog/2024-01-01-example-post/"
     },
     {
       "id": "tag-tutorial",
@@ -21,7 +21,7 @@
       "label": "blog",
       "type": "tag",
       "size": 6,
-      "color": "#ffffff",
+      "color": "#e0e0e0",
       "url": "/blog/?tag=blog"
     },
     {
@@ -29,7 +29,7 @@
       "label": "markdown",
       "type": "tag",
       "size": 6,
-      "color": "#ffffff",
+      "color": "#c0c0c0",
       "url": "/blog/?tag=markdown"
     },
     {
@@ -39,6 +39,174 @@
       "size": 7,
       "color": "#4ecdc4",
       "url": "/blog/?category=getting-started"
+    },
+    {
+      "id": "post-2024-01-15-building-daily-habits",
+      "label": "Building Daily Habits: The Foundation of Self-Improvement",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-15-building-daily-habits/"
+    },
+    {
+      "id": "tag-habits",
+      "label": "habits",
+      "type": "tag",
+      "size": 6,
+      "color": "#a0a0a0",
+      "url": "/blog/?tag=habits"
+    },
+    {
+      "id": "tag-discipline",
+      "label": "discipline",
+      "type": "tag",
+      "size": 6,
+      "color": "#ff6b6b",
+      "url": "/blog/?tag=discipline"
+    },
+    {
+      "id": "tag-consistency",
+      "label": "consistency",
+      "type": "tag",
+      "size": 6,
+      "color": "#4ecdc4",
+      "url": "/blog/?tag=consistency"
+    },
+    {
+      "id": "category-self-improvement",
+      "label": "self-improvement",
+      "type": "category",
+      "size": 7,
+      "color": "#4ecdc4",
+      "url": "/blog/?category=self-improvement"
+    },
+    {
+      "id": "post-2024-01-16-power-of-sleep",
+      "label": "The Power of Sleep: Your Secret Performance Enhancer",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-16-power-of-sleep/"
+    },
+    {
+      "id": "tag-sleep",
+      "label": "sleep",
+      "type": "tag",
+      "size": 6,
+      "color": "#45b7d1",
+      "url": "/blog/?tag=sleep"
+    },
+    {
+      "id": "tag-recovery",
+      "label": "recovery",
+      "type": "tag",
+      "size": 6,
+      "color": "#ffd93d",
+      "url": "/blog/?tag=recovery"
+    },
+    {
+      "id": "post-2024-01-17-exercise-mindset",
+      "label": "Exercise as a Mindset Tool: Train Your Brain, Not Just Your Body",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-17-exercise-mindset/"
+    },
+    {
+      "id": "tag-exercise",
+      "label": "exercise",
+      "type": "tag",
+      "size": 6,
+      "color": "#ffffff",
+      "url": "/blog/?tag=exercise"
+    },
+    {
+      "id": "tag-mindset",
+      "label": "mindset",
+      "type": "tag",
+      "size": 6,
+      "color": "#e0e0e0",
+      "url": "/blog/?tag=mindset"
+    },
+    {
+      "id": "post-2024-01-18-nutrition-mental-performance",
+      "label": "Nutrition and Mental Performance: Fuel Your Brain Right",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-18-nutrition-mental-performance/"
+    },
+    {
+      "id": "tag-nutrition",
+      "label": "nutrition",
+      "type": "tag",
+      "size": 6,
+      "color": "#c0c0c0",
+      "url": "/blog/?tag=nutrition"
+    },
+    {
+      "id": "tag-health",
+      "label": "health",
+      "type": "tag",
+      "size": 6,
+      "color": "#a0a0a0",
+      "url": "/blog/?tag=health"
+    },
+    {
+      "id": "post-2024-01-19-deep-work-focus",
+      "label": "Deep Work and Focus: How to Do Your Best Work",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-19-deep-work-focus/"
+    },
+    {
+      "id": "tag-productivity",
+      "label": "productivity",
+      "type": "tag",
+      "size": 6,
+      "color": "#ff6b6b",
+      "url": "/blog/?tag=productivity"
+    },
+    {
+      "id": "tag-learning",
+      "label": "learning",
+      "type": "tag",
+      "size": 6,
+      "color": "#4ecdc4",
+      "url": "/blog/?tag=learning"
+    },
+    {
+      "id": "post-2024-01-20-compound-effect",
+      "label": "The Compound Effect: Small Changes, Extraordinary Results",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-20-compound-effect/"
+    },
+    {
+      "id": "tag-growth",
+      "label": "growth",
+      "type": "tag",
+      "size": 6,
+      "color": "#45b7d1",
+      "url": "/blog/?tag=growth"
+    },
+    {
+      "id": "post-2024-01-21-morning-routines",
+      "label": "The Perfect Morning Routine: Own Your First 2 Hours",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-21-morning-routines/"
+    },
+    {
+      "id": "post-2024-01-22-deliberate-practice",
+      "label": "Deliberate Practice: How to Actually Get Better",
+      "type": "post",
+      "size": 8,
+      "color": "#ffffff",
+      "url": "/blog/2024-01-22-deliberate-practice/"
     }
   ],
   "links": [
@@ -57,9 +225,222 @@
     {
       "source": "post-2024-01-01-example-post",
       "target": "category-getting-started"
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "tag-habits"
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "tag-discipline"
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "tag-consistency"
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "tag-sleep"
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "tag-recovery"
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "tag-habits"
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "tag-exercise"
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "tag-mindset"
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "tag-discipline"
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-18-nutrition-mental-performance",
+      "target": "tag-nutrition"
+    },
+    {
+      "source": "post-2024-01-18-nutrition-mental-performance",
+      "target": "tag-mindset"
+    },
+    {
+      "source": "post-2024-01-18-nutrition-mental-performance",
+      "target": "tag-health"
+    },
+    {
+      "source": "post-2024-01-18-nutrition-mental-performance",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "tag-productivity"
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "tag-discipline"
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "tag-learning"
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "tag-habits"
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "tag-growth"
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "tag-consistency"
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-21-morning-routines",
+      "target": "tag-habits"
+    },
+    {
+      "source": "post-2024-01-21-morning-routines",
+      "target": "tag-productivity"
+    },
+    {
+      "source": "post-2024-01-21-morning-routines",
+      "target": "tag-discipline"
+    },
+    {
+      "source": "post-2024-01-21-morning-routines",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-22-deliberate-practice",
+      "target": "tag-learning"
+    },
+    {
+      "source": "post-2024-01-22-deliberate-practice",
+      "target": "tag-growth"
+    },
+    {
+      "source": "post-2024-01-22-deliberate-practice",
+      "target": "tag-discipline"
+    },
+    {
+      "source": "post-2024-01-22-deliberate-practice",
+      "target": "category-self-improvement"
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-16-power-of-sleep",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-17-exercise-mindset",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-19-deep-work-focus",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-20-compound-effect",
+      "strength": 0.6666666666666666
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-21-morning-routines",
+      "strength": 0.6666666666666666
+    },
+    {
+      "source": "post-2024-01-15-building-daily-habits",
+      "target": "post-2024-01-22-deliberate-practice",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "post-2024-01-20-compound-effect",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-16-power-of-sleep",
+      "target": "post-2024-01-21-morning-routines",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "post-2024-01-18-nutrition-mental-performance",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "post-2024-01-19-deep-work-focus",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "post-2024-01-21-morning-routines",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-17-exercise-mindset",
+      "target": "post-2024-01-22-deliberate-practice",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "post-2024-01-21-morning-routines",
+      "strength": 0.6666666666666666
+    },
+    {
+      "source": "post-2024-01-19-deep-work-focus",
+      "target": "post-2024-01-22-deliberate-practice",
+      "strength": 0.6666666666666666
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "post-2024-01-21-morning-routines",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-20-compound-effect",
+      "target": "post-2024-01-22-deliberate-practice",
+      "strength": 0.3333333333333333
+    },
+    {
+      "source": "post-2024-01-21-morning-routines",
+      "target": "post-2024-01-22-deliberate-practice",
+      "strength": 0.3333333333333333
     }
   ],
-  "generated": "2024-01-01T00:00:00.000Z",
-  "postCount": 1,
-  "tagCount": 3
+  "generated": "2025-11-01T17:02:56.934Z",
+  "postCount": 9,
+  "tagCount": 15
 }
