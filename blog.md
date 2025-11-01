@@ -32,13 +32,13 @@ permalink: /blog/
             <div class="post-image" style="background: linear-gradient(135deg, #333, #555);"></div>
             {% endif %}
             <div class="post-content">
-                <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+                <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
                 <p>{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
                 <div class="post-meta">
                     <span>{{ site.author }}</span>
                     <span>{{ post.date | date: "%b %d, %Y" }}</span>
                 </div>
-                <a href="{{ post.url }}" style="display: inline-block; margin-top: 1rem;">Read Full Post →</a>
+                <a href="{{ post.url | relative_url }}" style="display: inline-block; margin-top: 1rem;">Read Full Post →</a>
             </div>
         </div>
         {% endfor %}
