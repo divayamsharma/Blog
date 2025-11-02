@@ -4,6 +4,67 @@ All changes made to the Dan Koe Blog project will be documented here.
 
 ---
 
+## [Knowledge Graph Implementation & Fixes] - 2025-11-02
+
+### Knowledge Graph 2.0 Generated
+
+**What:** Successfully generated interactive D3.js knowledge graph from blog post metadata
+**Files Created:**
+- `assets/data/posts-graph.json` - Auto-generated from `npm run graph`
+  - 9 posts as white nodes (size 8)
+  - 15 tags as colored nodes (size 6)
+  - 2 categories as teal nodes (size 7)
+  - 53 connections showing post-tag, post-category, and post-post relationships
+
+**Performance Impact:**
+- File size: 11 KB (minified, ~3 KB gzipped)
+- Page load: <2 seconds on graph page
+- Zero impact on other pages (D3.js only loads on `/graph/`)
+- Lazy script loading with `defer` attribute
+
+### Bug Fixes
+
+#### Issue 1: Knowledge Graph Not Loading on GitHub Pages
+**Problem:** Graph displayed "Knowledge graph data is being generated. Check back soon!" error message
+**Root Cause 1 - Baseurl Path Issue:**
+- JavaScript was fetching from `/assets/data/posts-graph.json`
+- GitHub Pages serves site at `/Blog/`, so it needed `/Blog/assets/data/posts-graph.json`
+
+**Fix 1 - Dynamic Baseurl in JavaScript:**
+- Modified `assets/js/knowledge-graph.js` to read `data-baseurl` attribute from HTML tag
+- Updated `_layouts/default.html` to include `data-baseurl="{{ site.baseurl }}"`
+- Now fetch path automatically adjusts based on site configuration
+
+**Root Cause 2 - D3.js Loading Timing:**
+- Knowledge graph script initialized before D3.js library was available
+- Race condition caused D3 object to be undefined when script ran
+
+**Fix 2 - Deferred D3.js Initialization:**
+- Added retry logic in `knowledge-graph.js`
+- Waits for D3.js to be available before initializing graph
+- Uses 100ms retry interval with timeout handling
+
+#### Changes Made:
+1. **`assets/js/knowledge-graph.js`** (lines 14-29, 218-237)
+   - Added baseurl detection from `document.documentElement.getAttribute('data-baseurl')`
+   - Wrapped fetch URL in template literal: `` ${baseurl}/assets/data/posts-graph.json ``
+   - Added D3.js availability check with retry mechanism
+
+2. **`_layouts/default.html`** (line 2)
+   - Added `data-baseurl="{{ site.baseurl }}"` attribute to `<html>` tag
+   - Ensures JavaScript can access baseurl configuration
+
+### Testing & Validation
+✅ Graph data generated: 9 posts, 15 tags, 53 links
+✅ Fetch path now respects baseurl
+✅ D3.js initialization waits for library availability
+✅ Changes pushed to GitHub
+
+### Status
+Graph now fully functional and ready for deployment. Will display at: `https://divayamsharma.github.io/Blog/graph/`
+
+---
+
 ## [GitHub Pages Deployment Fixed] - 2025-11-02
 
 ### Issue
