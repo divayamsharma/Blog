@@ -140,26 +140,32 @@ class KnowledgeGraph {
             }
         });
 
-        // Create label nodes with dimensions-based spacing
-        // Longer titles get more space to prevent overlap
+        // Create label nodes with MUCH larger initial spacing
+        // Position labels in a circular pattern far from nodes to minimize initial overlap
         this.labelNodes = this.nodes.map((d, i) => {
-            const angle = (Math.PI * 2 * i) / this.nodes.length;
             const dims = textDimensions[d.id];
-            // Radius increases with text length (longer = needs more space)
-            // Base 45px + additional space for longer titles
-            const textLength = Math.max(dims.width, dims.height);
-            const dynamicRadius = Math.max(50, textLength / 2 + 20);
+
+            // Calculate much larger radius to keep labels far apart
+            // This prevents initial overlap by positioning labels in a sparse pattern
+            const angle = (Math.PI * 2 * i) / this.nodes.length;
+
+            // Use canvas dimensions to space labels across the full area
+            const circleRadius = Math.min(width, height) / 2.5;
+
+            // Position label far from center using angle
+            const labelX = (width / 2) + Math.cos(angle) * circleRadius;
+            const labelY = (height / 2) + Math.sin(angle) * circleRadius;
 
             return {
                 id: `label-${d.id}`,
                 parentId: d.id,
-                x: (d.x || 0) + Math.cos(angle) * dynamicRadius,
-                y: (d.y || 0) + Math.sin(angle) * dynamicRadius,
+                x: labelX,
+                y: labelY,
                 vx: 0,
                 vy: 0,
                 width: dims.width,
                 height: dims.height,
-                collisionRadius: dims.width / 2 + 12 // Half width + padding
+                collisionRadius: dims.width / 2 + 20 // Extra padding for collision
             };
         });
 
@@ -167,31 +173,31 @@ class KnowledgeGraph {
         // Labels repel each other (like magnets with same poles) but are attracted to their nodes
         // This creates a "magnetic repulsion" effect where overlapping labels push away
         this.labelSimulation = d3.forceSimulation(this.labelNodes)
-            .force('label-charge', d3.forceManyBody().strength(-500)) // Very strong repulsion - labels act like opposite magnetic poles
+            .force('label-charge', d3.forceManyBody().strength(-600)) // Very strong repulsion
             .force('label-collision', d3.forceCollide()
-                .radius(d => d.collisionRadius + 8)) // Extra padding to ensure no overlap
-            .velocityDecay(0.3) // Higher decay keeps system more stable
+                .radius(d => d.collisionRadius + 15)) // EXTRA padding to prevent ANY overlap
+            .velocityDecay(0.25) // Lower decay = more movement = labels spread out more
             .on('tick', () => {
                 // Manually apply attraction to parent nodes during simulation
                 this.labelNodes.forEach(label => {
                     const parentNode = this.nodes.find(n => n.id === label.parentId);
                     if (parentNode) {
-                        // Calculate desired distance based on text width (farther for longer titles)
-                        const desiredDistance = Math.max(55, label.width / 2 + 35);
+                        // Calculate desired distance - labels should stay visible but close to nodes
+                        const desiredDistance = Math.max(60, label.width / 2 + 40);
                         const angle = Math.atan2(label.y - (parentNode.y || 0), label.x - (parentNode.x || 0));
                         const distance = Math.sqrt(
                             Math.pow(label.x - (parentNode.x || 0), 2) +
                             Math.pow(label.y - (parentNode.y || 0), 2)
                         );
 
-                        // Apply stronger attraction force to keep labels tethered
-                        const strength = 0.2; // Increased from 0.15
+                        // Apply very strong attraction to keep labels from wandering too far
+                        const strength = 0.25; // Increased from 0.2 - MUCH stronger pull
                         if (distance > desiredDistance) {
-                            // Too far - pull toward parent
+                            // Too far - pull toward parent strongly
                             label.vx -= Math.cos(angle) * strength;
                             label.vy -= Math.sin(angle) * strength;
-                        } else if (distance < desiredDistance * 0.65) {
-                            // Too close - push away more aggressively
+                        } else if (distance < desiredDistance * 0.6) {
+                            // Too close - push away
                             label.vx += Math.cos(angle) * strength;
                             label.vy += Math.sin(angle) * strength;
                         }
@@ -200,15 +206,11 @@ class KnowledgeGraph {
             })
             .stop(); // Don't auto-tick, we'll update manually
 
-        // Run more initial ticks to achieve stable equilibrium
-        // With stronger repulsion, more iterations needed
-        for (let i = 0; i < 300; i++) {
+        // Run MANY more initial ticks to achieve stable equilibrium
+        // With stronger repulsion and wider initial spacing, need MORE convergence
+        for (let i = 0; i < 500; i++) {
             this.labelSimulation.tick();
         }
-
-        // Post-process: Detect and fix any remaining overlaps using proven collision detection
-        // Based on observable.hq collision detection algorithms
-        this.detectAndFixLabelOverlaps(node, textDimensions);
 
         // Add click handler
         node.on('click', (event, d) => {
@@ -286,7 +288,7 @@ class KnowledgeGraph {
             // Update label positions multiple times per tick to keep them properly repelled
             // With stronger repulsion forces, more ticks per frame ensure smooth, stable positioning
             // This creates a "magnetic repulsion" effect where labels push away like south poles
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 20; i++) {
                 this.labelSimulation.tick();
             }
 
