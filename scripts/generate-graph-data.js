@@ -72,13 +72,28 @@ class GraphDataGenerator {
 
             // Create node for post
             const postId = `post-${file.replace('.md', '')}`;
+
+            // Extract date from filename (YYYY-MM-DD-title.md)
+            const dateMatch = file.match(/^(\d{4})-(\d{2})-(\d{2})-/);
+            const [, year, month, day] = dateMatch || ['', '', '', ''];
+
+            // Get category (first one if multiple)
+            const categories = frontMatter.categories || [];
+            const category = Array.isArray(categories) ? categories[0] : categories;
+
+            // Generate URL based on Jekyll permalink: /:categories/:year/:month/:day/:title/
+            const titleSlug = file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace('.md', '');
+            const url = category
+                ? `/${category}/${year}/${month}/${day}/${titleSlug}/`
+                : `/${year}/${month}/${day}/${titleSlug}/`;
+
             const postNode = {
                 id: postId,
                 label: frontMatter.title || 'Untitled',
                 type: 'post',
                 size: 8,
                 color: '#ffffff',
-                url: `/blog/${file.replace('.md', '')}/`
+                url: url
             };
 
             this.nodes.set(postId, postNode);

@@ -235,7 +235,8 @@ class KnowledgeGraph {
         // Add click handler
         node.on('click', (event, d) => {
             if (d.url) {
-                window.location.href = d.url;
+                const baseurl = document.documentElement.getAttribute('data-baseurl') || '';
+                window.location.href = baseurl + d.url;
             }
         });
 
