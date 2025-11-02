@@ -163,26 +163,37 @@ class KnowledgeGraph {
             };
         });
 
-        // Create label links (connecting labels to their parent nodes)
-        const labelLinks = this.labelNodes.map(label => ({
-            source: label.parentId,
-            target: label.id
-        }));
-
         // Create separate simulation for label positioning
         // Labels repel each other (like magnets with same poles) but are attracted to their nodes
         this.labelSimulation = d3.forceSimulation(this.labelNodes)
             .force('label-charge', d3.forceManyBody().strength(-450)) // Extra strong repulsion for long titles
-            .force('label-link', d3.forceLink(labelLinks)
-                .id(d => d.id)
-                .distance(d => {
-                    // Longer titles need more distance from parent node
-                    const source = this.labelNodes.find(ln => ln.id === d.source);
-                    return Math.max(50, source.width / 2 + 30);
-                })
-                .strength(0.85)) // Strong attraction to parent node
             .force('label-collision', d3.forceCollide()
                 .radius(d => d.collisionRadius)) // Dynamic radius based on text width
+            .on('tick', () => {
+                // Manually apply attraction to parent nodes during simulation
+                this.labelNodes.forEach(label => {
+                    const parentNode = this.nodes.find(n => n.id === label.parentId);
+                    if (parentNode) {
+                        // Calculate desired distance based on text width
+                        const desiredDistance = Math.max(50, label.width / 2 + 30);
+                        const angle = Math.atan2(label.y - (parentNode.y || 0), label.x - (parentNode.x || 0));
+                        const distance = Math.sqrt(
+                            Math.pow(label.x - (parentNode.x || 0), 2) +
+                            Math.pow(label.y - (parentNode.y || 0), 2)
+                        );
+
+                        // Apply attraction force if too far or too close
+                        const strength = 0.15;
+                        if (distance > desiredDistance) {
+                            label.vx -= Math.cos(angle) * strength;
+                            label.vy -= Math.sin(angle) * strength;
+                        } else if (distance < desiredDistance * 0.7) {
+                            label.vx += Math.cos(angle) * strength;
+                            label.vy += Math.sin(angle) * strength;
+                        }
+                    }
+                });
+            })
             .stop(); // Don't auto-tick, we'll update manually
 
         // Run many more initial ticks to get labels into optimal positions
