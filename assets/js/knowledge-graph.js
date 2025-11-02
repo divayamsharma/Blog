@@ -165,29 +165,33 @@ class KnowledgeGraph {
 
         // Create separate simulation for label positioning
         // Labels repel each other (like magnets with same poles) but are attracted to their nodes
+        // This creates a "magnetic repulsion" effect where overlapping labels push away
         this.labelSimulation = d3.forceSimulation(this.labelNodes)
-            .force('label-charge', d3.forceManyBody().strength(-450)) // Extra strong repulsion for long titles
+            .force('label-charge', d3.forceManyBody().strength(-500)) // Very strong repulsion - labels act like opposite magnetic poles
             .force('label-collision', d3.forceCollide()
-                .radius(d => d.collisionRadius)) // Dynamic radius based on text width
+                .radius(d => d.collisionRadius + 8)) // Extra padding to ensure no overlap
+            .velocityDecay(0.3) // Higher decay keeps system more stable
             .on('tick', () => {
                 // Manually apply attraction to parent nodes during simulation
                 this.labelNodes.forEach(label => {
                     const parentNode = this.nodes.find(n => n.id === label.parentId);
                     if (parentNode) {
-                        // Calculate desired distance based on text width
-                        const desiredDistance = Math.max(50, label.width / 2 + 30);
+                        // Calculate desired distance based on text width (farther for longer titles)
+                        const desiredDistance = Math.max(55, label.width / 2 + 35);
                         const angle = Math.atan2(label.y - (parentNode.y || 0), label.x - (parentNode.x || 0));
                         const distance = Math.sqrt(
                             Math.pow(label.x - (parentNode.x || 0), 2) +
                             Math.pow(label.y - (parentNode.y || 0), 2)
                         );
 
-                        // Apply attraction force if too far or too close
-                        const strength = 0.15;
+                        // Apply stronger attraction force to keep labels tethered
+                        const strength = 0.2; // Increased from 0.15
                         if (distance > desiredDistance) {
+                            // Too far - pull toward parent
                             label.vx -= Math.cos(angle) * strength;
                             label.vy -= Math.sin(angle) * strength;
-                        } else if (distance < desiredDistance * 0.7) {
+                        } else if (distance < desiredDistance * 0.65) {
+                            // Too close - push away more aggressively
                             label.vx += Math.cos(angle) * strength;
                             label.vy += Math.sin(angle) * strength;
                         }
@@ -196,9 +200,9 @@ class KnowledgeGraph {
             })
             .stop(); // Don't auto-tick, we'll update manually
 
-        // Run many more initial ticks to get labels into optimal positions
-        // More iterations needed with dynamic forces
-        for (let i = 0; i < 250; i++) {
+        // Run more initial ticks to achieve stable equilibrium
+        // With stronger repulsion, more iterations needed
+        for (let i = 0; i < 300; i++) {
             this.labelSimulation.tick();
         }
 
@@ -276,9 +280,9 @@ class KnowledgeGraph {
         // Update positions on tick
         this.simulation.on('tick', () => {
             // Update label positions multiple times per tick to keep them properly repelled
-            // More iterations needed with dynamic collision radii for long titles
-            // This creates a "magnetic repulsion" effect where labels push away from each other
-            for (let i = 0; i < 12; i++) {
+            // With stronger repulsion forces, more ticks per frame ensure smooth, stable positioning
+            // This creates a "magnetic repulsion" effect where labels push away like south poles
+            for (let i = 0; i < 15; i++) {
                 this.labelSimulation.tick();
             }
 
