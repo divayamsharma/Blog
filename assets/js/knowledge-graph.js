@@ -56,15 +56,15 @@ class KnowledgeGraph {
             .attr('points', '0 0, 10 3, 0 6')
             .attr('fill', '#666');
 
-        // Create force simulation
+        // Create force simulation with increased spacing to prevent label overlap
         this.simulation = d3.forceSimulation(this.nodes)
             .force('link', d3.forceLink(this.links)
                 .id(d => d.id)
-                .distance(100)
-                .strength(0.5))
-            .force('charge', d3.forceManyBody().strength(-300))
+                .distance(180)  // Increased from 100 to spread nodes further apart
+                .strength(0.4))  // Slightly reduced to allow more movement
+            .force('charge', d3.forceManyBody().strength(-400))  // Increased repulsion
             .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius(30));
+            .force('collision', d3.forceCollide().radius(65))  // Increased from 30 to 65 for more space
 
         // Create link elements
         const link = this.svg.selectAll('line')
@@ -94,7 +94,18 @@ class KnowledgeGraph {
             .attr('opacity', 0.8)
             .style('cursor', 'pointer');
 
-        // Add labels
+        // Add label backgrounds for better readability
+        node.append('rect')
+            .attr('class', 'label-bg')
+            .attr('x', -40)
+            .attr('y', -12)
+            .attr('width', 80)
+            .attr('height', 24)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(0, 0, 0, 0.6)')
+            .attr('pointer-events', 'none');
+
+        // Add labels with better contrast
         node.append('text')
             .text(d => d.label)
             .attr('font-size', '11px')
@@ -102,8 +113,8 @@ class KnowledgeGraph {
             .attr('dy', '.3em')
             .attr('fill', '#fff')
             .attr('pointer-events', 'none')
-            .style('font-weight', 500)
-            .style('text-shadow', '0 0 4px rgba(0,0,0,0.8)');
+            .style('font-weight', 600)
+            .style('letter-spacing', '0.5px');
 
         // Add click handler
         node.on('click', (event, d) => {
@@ -124,6 +135,11 @@ class KnowledgeGraph {
                 .transition()
                 .duration(200)
                 .attr('font-size', '13px');
+
+            d3.select(this).select('.label-bg')
+                .transition()
+                .duration(200)
+                .attr('fill', 'rgba(0, 0, 0, 0.8)');
 
             // Highlight connected nodes
             link.style('stroke', l => {
@@ -159,6 +175,11 @@ class KnowledgeGraph {
                 .transition()
                 .duration(200)
                 .attr('font-size', '11px');
+
+            d3.select(this).select('.label-bg')
+                .transition()
+                .duration(200)
+                .attr('fill', 'rgba(0, 0, 0, 0.6)');
 
             link.style('stroke', '#333')
                 .style('opacity', 0.6);
