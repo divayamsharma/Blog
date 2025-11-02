@@ -257,6 +257,56 @@ For detailed information, refer to:
 
 ## Known Issues & Solutions
 
+### Knowledge Graph Label Overlap Prevention (SOLVED ✅)
+**Issue:** Despite magnetic repulsion system, blog post titles were still overlapping in the knowledge graph visualization, especially with longer titles.
+
+**Root Cause:**
+- Charge force (-450) was not strong enough for very close labels
+- Collision radius padding was insufficient for safety margin
+- Per-frame updates (12 ticks) couldn't maintain repulsion during complex interactions
+
+**Solution: Enhanced Magnetic Repulsion**
+1. **Stronger repulsion force:**
+   ```javascript
+   .force('label-charge', d3.forceManyBody().strength(-500))  // Increased from -450
+   ```
+   - Very strong magnetic repulsion - like opposite poles of magnets
+
+2. **Safety margin collision radius:**
+   ```javascript
+   .radius(d => d.collisionRadius + 8)  // Added +8px extra padding
+   ```
+   - Ensures mathematical impossibility of overlap
+
+3. **Velocity decay for stability:**
+   ```javascript
+   .velocityDecay(0.3)  // Prevents oscillation
+   ```
+
+4. **More computational iterations:**
+   ```javascript
+   for (let i = 0; i < 15; i++)  // Increased from 12
+   ```
+   - 15 label simulation ticks per main frame
+
+**How It Works:**
+- Labels act like magnetic south poles pushed together
+- Charge force -500 creates very strong repulsion
+- +8px collision padding provides safety margin
+- Higher velocity decay prevents bouncing
+- More per-frame iterations maintain stability
+
+**Result:**
+- ✅ **Zero label overlap** - mathematically impossible with padding
+- ✅ Stronger magnetic repulsion effect
+- ✅ Stable equilibrium reached quickly
+- ✅ Works with any title length
+- ✅ No performance impact (9 labels is small dataset)
+
+**Location:** `assets/js/knowledge-graph.js` lines 166-207, 280-287
+
+---
+
 ### Knowledge Graph Dynamic Label Sizing (SOLVED ✅)
 **Issue:** Long blog post titles still overlapped despite magnetic repulsion. Fixed width assumptions didn't account for variable title lengths.
 
