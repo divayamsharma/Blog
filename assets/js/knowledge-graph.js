@@ -216,7 +216,22 @@ class KnowledgeGraph {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
+// Wait for D3.js to be available
+function initializeGraph() {
+    if (typeof d3 === 'undefined') {
+        // D3 not ready yet, try again in 100ms
+        setTimeout(initializeGraph, 100);
+        return;
+    }
+
     const graph = new KnowledgeGraph('knowledge-graph');
     graph.buildGraphFromPosts();
-});
+}
+
+// Start initialization when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeGraph);
+} else {
+    // DOM already loaded
+    initializeGraph();
+}
