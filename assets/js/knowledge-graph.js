@@ -177,8 +177,9 @@ class KnowledgeGraph {
             node.attr('transform', d => `translate(${d.x},${d.y})`);
         });
 
-        // Add zoom
+        // Add zoom with constrained scale limits
         const zoom = d3.zoom()
+            .scaleExtent([0.5, 5]) // Min zoom: 0.5x (50%), Max zoom: 5x (500%)
             .on('zoom', (event) => {
                 this.svg.selectAll('g').attr('transform', event.transform);
             });

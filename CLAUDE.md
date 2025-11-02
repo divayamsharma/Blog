@@ -299,3 +299,30 @@ For detailed information, refer to:
 - **Graph updates:** Always run `npm run graph` before checking in new posts (or it auto-runs with prebuild)
 - **Building:** Always test locally with `npm run serve` before pushing to GitHub
 - **Baseurl fixes:** Any JavaScript that fetches assets must use `data-baseurl` attribute pattern (see Knowledge Graph Baseurl Issue)
+
+## Roadmap & Next Steps
+
+### High Priority Issues
+1. **Graph Node Filtering** - Show only blog posts
+   - Current: Displays posts + tags + categories
+   - Desired: Only posts (no tags like "health", "sleep", "mindset")
+   - File: `scripts/generate-graph-data.js`
+   - Change: Modify node/link generation to exclude tag and category nodes
+
+2. **Graph Zoom Constraint** - Prevent content from vanishing
+   - Current: Zoom has no limits, nodes disappear at extreme scales
+   - Desired: Constrain zoom with min/max scale factors
+   - File: `assets/js/knowledge-graph.js` (lines 180-186)
+   - Change: Add scaleExtent() to d3.zoom() initialization
+
+### Medium Priority Optimizations
+- Add `jekyll-paginate` gem to Gemfile (remove deprecation warning)
+- Implement gzip compression for posts-graph.json (12KB → 3KB)
+- Add HTTP cache headers to graph data
+- Add keyboard navigation (arrow keys, Enter key)
+
+### Low Priority Enhancements
+- Add ARIA labels for accessibility
+- Implement post-to-post link filtering for large datasets (100+ posts)
+- Preload D3.js on pages leading to graph
+- Minify JSON structure for future scalability

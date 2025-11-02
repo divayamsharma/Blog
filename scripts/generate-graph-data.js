@@ -83,56 +83,15 @@ class GraphDataGenerator {
 
             this.nodes.set(postId, postNode);
 
-            // Create nodes and links for tags
-            const tags = frontMatter.tags || [];
-            tags.forEach(tag => {
-                const tagId = `tag-${tag}`;
-
-                // Create tag node if it doesn't exist
-                if (!this.nodes.has(tagId)) {
-                    this.nodes.set(tagId, {
-                        id: tagId,
-                        label: tag,
-                        type: 'tag',
-                        size: 6,
-                        color: this.getColorForTag(tag),
-                        url: `/blog/?tag=${tag}`
-                    });
-                }
-
-                // Create link between post and tag
-                this.links.push({
-                    source: postId,
-                    target: tagId
-                });
-            });
-
-            // Create nodes for categories
-            const categories = frontMatter.categories || [];
-            categories.forEach(category => {
-                const categoryId = `category-${category}`;
-
-                if (!this.nodes.has(categoryId)) {
-                    this.nodes.set(categoryId, {
-                        id: categoryId,
-                        label: category,
-                        type: 'category',
-                        size: 7,
-                        color: '#4ecdc4',
-                        url: `/blog/?category=${category}`
-                    });
-                }
-
-                this.links.push({
-                    source: postId,
-                    target: categoryId
-                });
-            });
+            // Store tags and categories for linking posts together
+            // but don't create separate nodes for them
+            postNode.tags = frontMatter.tags || [];
+            postNode.categories = frontMatter.categories || [];
         });
     }
 
     /**
-     * Link related posts based on shared tags
+     * Link related posts based on shared tags and categories
      */
     linkRelatedPosts() {
         const postNodes = Array.from(this.nodes.values()).filter(n => n.type === 'post');
@@ -142,22 +101,22 @@ class GraphDataGenerator {
                 const post1 = postNodes[i];
                 const post2 = postNodes[j];
 
-                // Find shared tags
-                const sharedTags = [];
-                for (const link of this.links) {
-                    if (link.source === post1.id && link.target.startsWith('tag-')) {
-                        if (this.links.some(l => l.source === post2.id && l.target === link.target)) {
-                            sharedTags.push(link.target);
-                        }
-                    }
-                }
+                // Find shared tags and categories
+                const sharedTags = (post1.tags || []).filter(tag =>
+                    (post2.tags || []).includes(tag)
+                );
+                const sharedCategories = (post1.categories || []).filter(cat =>
+                    (post2.categories || []).includes(cat)
+                );
 
-                // Link if they share tags
-                if (sharedTags.length > 0) {
+                const totalShared = sharedTags.length + sharedCategories.length;
+
+                // Link if they share tags or categories
+                if (totalShared > 0) {
                     this.links.push({
                         source: post1.id,
                         target: post2.id,
-                        strength: Math.min(sharedTags.length / 3, 1) // Normalize strength
+                        strength: Math.min(totalShared / 3, 1) // Normalize strength
                     });
                 }
             }
@@ -174,12 +133,12 @@ class GraphDataGenerator {
         this.linkRelatedPosts();
 
         // Prepare data for D3.js
+        const postCount = Array.from(this.nodes.values()).filter(n => n.type === 'post').length;
         const graphData = {
             nodes: Array.from(this.nodes.values()),
             links: this.links,
             generated: new Date().toISOString(),
-            postCount: Array.from(this.nodes.values()).filter(n => n.type === 'post').length,
-            tagCount: Array.from(this.nodes.values()).filter(n => n.type === 'tag').length
+            postCount: postCount
         };
 
         // Create output directory if needed
@@ -192,8 +151,7 @@ class GraphDataGenerator {
         fs.writeFileSync(outputPath, JSON.stringify(graphData, null, 2));
 
         console.log(`✓ Graph data generated: ${outputPath}`);
-        console.log(`  Posts: ${graphData.postCount}`);
-        console.log(`  Tags: ${graphData.tagCount}`);
+        console.log(`  Posts: ${postCount}`);
         console.log(`  Links: ${graphData.links.length}`);
 
         return graphData;

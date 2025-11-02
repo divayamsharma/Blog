@@ -348,3 +348,32 @@ chmod +x deploy.sh
 
 **Last Updated:** 2025-11-02
 **Status:** ✅ PRODUCTION READY - All systems deployed and fully operational
+
+---
+
+## Next Steps / Todo List
+
+### High Priority
+- [ ] **Fix Graph Display** - Only show blog posts, remove tags and categories
+  - Tags like "health", "sleep", "mindset" should not appear as separate nodes
+  - Only posts should be visible nodes
+  - Files to modify: `scripts/generate-graph-data.js`
+
+- [ ] **Fix Graph Zoom Behavior** - Content vanishes when zooming
+  - Zoom goes too far in or out, causing nodes to disappear
+  - Need to constrain zoom scale limits
+  - Files to modify: `assets/js/knowledge-graph.js` (zoom function)
+
+### Medium Priority
+- [ ] Add `jekyll-paginate` gem to Gemfile (fixes deprecation warning)
+- [ ] Implement gzip compression for posts-graph.json (reduce 12KB → 3KB)
+- [ ] Add HTTP cache headers to assets/data/posts-graph.json
+- [ ] Add keyboard navigation to graph (arrow keys, Enter)
+
+### Low Priority
+- [ ] Add ARIA labels for accessibility
+- [ ] Implement link filtering (remove weak post-to-post connections if posts scale beyond 100)
+- [ ] Add preload link for D3.js on pages before `/graph/`
+- [ ] Minify JSON keys for future scalability
+
+---
