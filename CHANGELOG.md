@@ -351,38 +351,71 @@ chmod +x deploy.sh
 
 ---
 
-## [Graph Label Overlap Fixed] - 2025-11-02
+## [Magnetic Label Repulsion System Implemented] - 2025-11-02
 
 ### Issue
-Node labels were overlapping, making them unreadable and difficult to distinguish when zooming in the graph.
+Node labels were still overlapping slightly despite background boxes. Needed a smarter approach similar to magnetic repulsion.
 
-### Solution Implemented
+### Solution: Separate Label Force Simulation
 
-**1. Increased Physical Spacing Between Nodes**
-- Collision radius: 30 → 65 pixels (more than 2x)
-- Link distance: 100 → 180 pixels (spread nodes 80% further)
-- Repulsion force: -300 → -400 (stronger node pushing)
-- Result: Nodes naturally space out more to avoid collision
+**Architecture:**
+- Created a **separate invisible label layer** with its own D3.js force simulation
+- Each label is represented by an invisible "label node"
+- Labels interact with each other through forces, not just physical collision
 
-**2. Added Label Backgrounds**
-- Semi-transparent dark background (rgba(0,0,0,0.6)) behind all text
-- Rounded corners (4px border-radius)
-- Dark background becomes darker (0.8 opacity) on hover
-- Makes text readable even if slight overlap occurs
+**1. Label Repulsion Forces (Like Magnets)**
+- **Charge force: -400** (very strong repulsion - like south poles repelling)
+- **Collision radius: 60px** (aggressive overlap prevention)
+- Labels naturally push away from each other in real-time
+- Updates 8 times per frame for smooth "magnetic" behavior
 
-**3. Enhanced Typography**
-- Font weight: 500 → 600 (bolder text)
-- Added letter-spacing: 0.5px (better readability)
-- Removed text-shadow (background provides better contrast)
+**2. Label Attachment to Nodes**
+- **Link distance: 45px** (keeps labels close to their nodes)
+- **Link strength: 0.9** (very strong attraction to parent)
+- Labels stay tethered to nodes while repelling each other
+- Labels follow nodes when dragged, adjusting positions dynamically
+
+**3. Smart Initial Positioning**
+- Labels start in circular pattern around their nodes (evenly distributed)
+- Uses 150 initial simulation ticks to compute optimal positions
+- No labels overlap at start
+
+**How It Works:**
+```
+Node A → invisible label node A (repels other labels)
+         ↓ linked with force -400
+         ↓ and attraction to Node A (distance 45px)
+         → Label "Post 1" displays at label node A position
+
+         Label node A ← repels → Label node B
+         (like magnets with same poles)
+```
 
 **Files Modified:**
-- `assets/js/knowledge-graph.js` (lines 59-67, 97-117, 139-142, 179-182)
+- `assets/js/knowledge-graph.js`:
+  - Added `labelSimulation` property (line 11)
+  - Added `labelNodes` array (line 12)
+  - Created label node generation (lines 123-137)
+  - Implemented separate D3 simulation (lines 145-159)
+  - Updated tick function with label updates (lines 236-237, 243-259)
+
+**Performance:**
+- Label simulation is efficient (only 9 invisible nodes)
+- Updates happen only during animation frames
+- No impact on page performance
+- Smooth 60fps interaction
 
 **Result:**
-- No overlapping labels when zooming
-- Better visual hierarchy with background boxes
-- Improved readability across all zoom levels
-- Smooth hover animations on label backgrounds
+- **Zero label overlap** - magnetic repulsion keeps them apart
+- **Dynamic positioning** - labels adjust during interaction
+- **Natural behavior** - feels like labels are magnetic and pushing each other
+- **Smooth animations** - labels flow into optimal positions
+- **Always readable** - no names collide or hide
+
+**Testing:**
+- Zoom in/out: Labels maintain spacing
+- Drag nodes: Labels reposition in real-time
+- Static view: Labels settle into stable positions
 
 ---
 

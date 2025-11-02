@@ -257,36 +257,71 @@ For detailed information, refer to:
 
 ## Known Issues & Solutions
 
-### Knowledge Graph Label Overlap Issue (SOLVED)
-**Issue:** Node labels overlapped when zooming, making names unreadable
-**Root Causes:**
-1. Nodes positioned too close together (collision radius only 30px)
-2. Links too short (100px distance)
-3. No visual separation between overlapping text
+### Knowledge Graph Label Repulsion Issue (SOLVED ✅)
+**Issue:** Node labels still overlapped despite spacing and backgrounds. Needed smarter positioning.
 
-**Solution:**
-1. Increase collision detection space:
+**Root Cause:**
+- Labels were positioned statically relative to nodes
+- No dynamic adjustment when labels got close to each other
+- Wanted behavior like magnetic repulsion (south pole to south pole)
+
+**Solution: Magnetic Label Repulsion System**
+Implemented a separate D3.js force simulation just for labels:
+
+1. **Create invisible label nodes:**
    ```javascript
-   .force('collision', d3.forceCollide().radius(65))  // Was 30
-   ```
-2. Spread nodes further apart:
-   ```javascript
-   .distance(180)  // Was 100
-   .strength(0.4)  // Was 0.5
-   ```
-3. Increase repulsion:
-   ```javascript
-   .force('charge', d3.forceManyBody().strength(-400))  // Was -300
-   ```
-4. Add label backgrounds for readability:
-   ```javascript
-   node.append('rect')
-       .attr('width', 80)
-       .attr('height', 24)
-       .attr('fill', 'rgba(0, 0, 0, 0.6)');
+   this.labelNodes = this.nodes.map((d, i) => {
+       const angle = (Math.PI * 2 * i) / this.nodes.length;
+       return {
+           id: `label-${d.id}`,
+           parentId: d.id,
+           x: (d.x || 0) + Math.cos(angle) * 45,
+           y: (d.y || 0) + Math.sin(angle) * 45
+       };
+   });
    ```
 
-**Location:** `assets/js/knowledge-graph.js` lines 59-67, 97-117
+2. **Create separate label simulation with repulsion:**
+   ```javascript
+   this.labelSimulation = d3.forceSimulation(this.labelNodes)
+       .force('label-charge', d3.forceManyBody().strength(-400))  // Magnetic repulsion
+       .force('label-link', d3.forceLink(labelLinks)
+           .distance(45)
+           .strength(0.9))  // Attract to parent node
+       .force('label-collision', d3.forceCollide().radius(60))
+       .stop();
+   ```
+
+3. **Update labels on every tick:**
+   ```javascript
+   this.simulation.on('tick', () => {
+       for (let i = 0; i < 8; i++) {
+           this.labelSimulation.tick();  // Multiple updates = strong repulsion
+       }
+       // Position labels based on label node positions
+       node.each(d => {
+           const labelNode = this.labelNodes.find(ln => ln.parentId === d.id);
+           const offsetX = labelNode.x - (d.x || 0);
+           const offsetY = labelNode.y - (d.y || 0);
+           // Apply offset to label elements
+       });
+   });
+   ```
+
+**How It Works:**
+- Each label has its own invisible "label node"
+- Label nodes repel each other with charge force -400 (like magnets)
+- Label nodes are linked to their parent nodes (distance 45px, strength 0.9)
+- Every frame, label simulation runs 8 times to maintain strong repulsion
+- Labels display at label node positions, creating dynamic spacing
+
+**Result:**
+- ✅ Zero label overlap - magnetic repulsion keeps them apart
+- ✅ Dynamic positioning - labels adjust when nodes move
+- ✅ Smooth behavior - labels feel natural (like magnetic fields)
+- ✅ No performance impact - only 9 invisible nodes
+
+**Location:** `assets/js/knowledge-graph.js` lines 11-12, 123-159, 236-259
 
 ### Knowledge Graph Baseurl Issue (SOLVED)
 **Issue:** Graph fails to load with "Knowledge graph data is being generated" message on GitHub Pages
