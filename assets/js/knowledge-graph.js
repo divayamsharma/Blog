@@ -309,13 +309,27 @@ class KnowledgeGraph {
                     const offsetX = labelNode.x - (d.x || 0);
                     const offsetY = labelNode.y - (d.y || 0);
 
+                    // Normalize offset to prevent labels from being right on top of nodes
+                    const offsetDist = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+                    const minDist = 70; // Minimum distance from node
+
+                    let finalOffsetX = offsetX;
+                    let finalOffsetY = offsetY;
+
+                    if (offsetDist < minDist && offsetDist > 0) {
+                        // Force minimum distance
+                        const scale = minDist / offsetDist;
+                        finalOffsetX = offsetX * scale;
+                        finalOffsetY = offsetY * scale;
+                    }
+
                     d3.select(this).select('.label-bg')
-                        .attr('x', offsetX - 40)
-                        .attr('y', offsetY - 12);
+                        .attr('x', finalOffsetX - 40)
+                        .attr('y', finalOffsetY - 12);
 
                     d3.select(this).select('text')
-                        .attr('x', offsetX)
-                        .attr('y', offsetY);
+                        .attr('x', finalOffsetX)
+                        .attr('y', finalOffsetY);
                 }
             });
         });
