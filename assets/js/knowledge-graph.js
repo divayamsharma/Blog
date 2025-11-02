@@ -113,7 +113,7 @@ class KnowledgeGraph {
             .each(function(d) {
                 // Split text into words for wrapping
                 const words = d.label.split(/\s+/);
-                const maxCharsPerLine = 50;
+                const maxCharsPerLine = 32;
                 let lines = [];
                 let currentLine = '';
 
