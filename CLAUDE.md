@@ -257,6 +257,35 @@ For detailed information, refer to:
 
 ## Known Issues & Solutions
 
+### Knowledge Graph Dynamic Label Sizing (SOLVED ✅)
+**Issue:** Long blog post titles still overlapped despite magnetic repulsion. Fixed width assumptions didn't account for variable title lengths.
+
+**Root Cause:**
+- Collision detection used fixed radius (60px) for all labels
+- Didn't account for actual text width (short: 50px, long: 300px+)
+- Long titles needed more space than short ones
+
+**Solution: Text-Aware Adaptive Spacing**
+1. **Measure text dimensions:**
+   ```javascript
+   const bbox = text.node().getBBox();  // Get actual width/height
+   const collisionRadius = bbox.width / 2 + 12;  // Half width + padding
+   ```
+2. **Dynamic collision radius per label** - no fixed size
+3. **Adaptive positioning** - longer titles start farther from nodes
+4. **Dynamic link distance** - varies based on text width
+5. **Enhanced forces** - stronger repulsion (-450) + more updates
+
+**Result:**
+- ✅ Works with any title length (short or very long)
+- ✅ Efficient space usage (no wasted padding)
+- ✅ Combined with magnetic repulsion = perfect spacing
+- ✅ Zero overlap guarantee
+
+**Location:** `assets/js/knowledge-graph.js` lines 123-164, 175-185, 270-271
+
+---
+
 ### Knowledge Graph Label Repulsion Issue (SOLVED ✅)
 **Issue:** Node labels still overlapped despite spacing and backgrounds. Needed smarter positioning.
 

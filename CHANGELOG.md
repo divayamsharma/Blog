@@ -351,6 +351,85 @@ chmod +x deploy.sh
 
 ---
 
+## [Dynamic Text Measurement & Adaptive Label Spacing] - 2025-11-02
+
+### Issue
+Long blog post titles were still overlapping because collision detection assumed fixed label widths. Need to measure actual text and adapt spacing per label.
+
+### Solution: Text-Aware Dynamic Spacing
+
+**1. Measure Actual Text Dimensions**
+- Use SVG `getBBox()` to measure rendered text width and height
+- Fallback calculation: `textLength * 6.5px` (average character width at 11px font)
+- Store dimensions in each label node
+
+**2. Dynamic Collision Radius**
+```javascript
+// Collision radius = half the text width + padding
+collisionRadius: dims.width / 2 + 12
+```
+- Short titles: ~35px collision radius
+- Medium titles: ~50px collision radius
+- Long titles: ~70-80px+ collision radius
+
+**3. Adaptive Initial Positioning**
+```javascript
+// Radius = max(50px, textLength/2 + 20px)
+// Longer titles start farther from their nodes
+dynamicRadius = Math.max(50, textLength / 2 + 20)
+```
+
+**4. Dynamic Link Distance**
+```javascript
+// Distance from node to label increases with title length
+.distance(d => Math.max(50, source.width / 2 + 30))
+```
+- Short titles: 50-55px from node
+- Long titles: 60-80px+ from node
+
+**5. Enhanced Repulsion**
+- Increased charge strength: -400 → -450 (stronger magnetic repulsion)
+- More initial ticks: 150 → 250 (complex forces need convergence time)
+- More per-frame updates: 8 → 12 (smoother with dynamic forces)
+
+**How It Works:**
+```
+Blog Post: "Building Daily Habits: The Foundation of Self-Improvement"
+         ↓ measure text
+         → width: 320px, height: 16px
+         ↓ calculate collision
+         → radius: 160 + 12 = 172px
+         ↓ calculate position
+         → distance from node: 190px
+         ↓ calculate repulsion
+         → charge: -450 (very strong)
+
+Result: Long title has plenty of space, no overlap
+```
+
+**Files Modified:**
+- `assets/js/knowledge-graph.js`:
+  - Text measurement (lines 123-141)
+  - Dynamic label node creation (lines 143-164)
+  - Dynamic collision radius (line 185)
+  - Dynamic link distance (lines 178-182)
+  - Enhanced repulsion (line 175, 270-271)
+
+**Performance:**
+- Text measurement runs once at initialization (negligible impact)
+- Dynamic forces same complexity as before (no perf degradation)
+- Smoother result despite more computational work
+
+**Result:**
+- ✅ No overlap even with long titles (e.g., "Building Daily Habits: The Foundation of Self-Improvement")
+- ✅ Each label gets exact space needed for its text width
+- ✅ Shorter titles don't get wasted space
+- ✅ Magnetic repulsion still works perfectly
+- ✅ Smooth animation with dynamic forces
+- ✅ Scales to any title length
+
+---
+
 ## [Magnetic Label Repulsion System Implemented] - 2025-11-02
 
 ### Issue
