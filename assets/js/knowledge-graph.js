@@ -120,19 +120,46 @@ class KnowledgeGraph {
             .style('font-weight', 600)
             .style('letter-spacing', '0.5px');
 
-        // Create label nodes for smart positioning with repulsion
-        // These are invisible nodes that represent where labels should be positioned
+        // Measure text dimensions to calculate proper spacing
+        // This ensures long titles get enough space
+        const textDimensions = {};
+        node.each(function(d) {
+            const text = d3.select(this).select('text');
+            try {
+                const bbox = text.node().getBBox();
+                textDimensions[d.id] = {
+                    width: bbox.width,
+                    height: bbox.height
+                };
+            } catch (e) {
+                // Fallback for text that can't be measured
+                textDimensions[d.id] = {
+                    width: d.label.length * 6.5, // ~6.5px per character at 11px font
+                    height: 16
+                };
+            }
+        });
+
+        // Create label nodes with dimensions-based spacing
+        // Longer titles get more space to prevent overlap
         this.labelNodes = this.nodes.map((d, i) => {
-            // Start labels at random offsets around their nodes (like magnetic field)
             const angle = (Math.PI * 2 * i) / this.nodes.length;
-            const radius = 45;
+            const dims = textDimensions[d.id];
+            // Radius increases with text length (longer = needs more space)
+            // Base 45px + additional space for longer titles
+            const textLength = Math.max(dims.width, dims.height);
+            const dynamicRadius = Math.max(50, textLength / 2 + 20);
+
             return {
                 id: `label-${d.id}`,
                 parentId: d.id,
-                x: (d.x || 0) + Math.cos(angle) * radius,
-                y: (d.y || 0) + Math.sin(angle) * radius,
+                x: (d.x || 0) + Math.cos(angle) * dynamicRadius,
+                y: (d.y || 0) + Math.sin(angle) * dynamicRadius,
                 vx: 0,
-                vy: 0
+                vy: 0,
+                width: dims.width,
+                height: dims.height,
+                collisionRadius: dims.width / 2 + 12 // Half width + padding
             };
         });
 
@@ -145,16 +172,22 @@ class KnowledgeGraph {
         // Create separate simulation for label positioning
         // Labels repel each other (like magnets with same poles) but are attracted to their nodes
         this.labelSimulation = d3.forceSimulation(this.labelNodes)
-            .force('label-charge', d3.forceManyBody().strength(-400)) // VERY strong repulsion - like magnets
+            .force('label-charge', d3.forceManyBody().strength(-450)) // Extra strong repulsion for long titles
             .force('label-link', d3.forceLink(labelLinks)
                 .id(d => d.id)
-                .distance(45) // Keep labels close to their nodes
-                .strength(0.9)) // Very strong attraction to parent node
-            .force('label-collision', d3.forceCollide().radius(60)) // Aggressive collision prevention
+                .distance(d => {
+                    // Longer titles need more distance from parent node
+                    const source = this.labelNodes.find(ln => ln.id === d.source);
+                    return Math.max(50, source.width / 2 + 30);
+                })
+                .strength(0.85)) // Strong attraction to parent node
+            .force('label-collision', d3.forceCollide()
+                .radius(d => d.collisionRadius)) // Dynamic radius based on text width
             .stop(); // Don't auto-tick, we'll update manually
 
-        // Run more initial ticks to get labels into better positions
-        for (let i = 0; i < 150; i++) {
+        // Run many more initial ticks to get labels into optimal positions
+        // More iterations needed with dynamic forces
+        for (let i = 0; i < 250; i++) {
             this.labelSimulation.tick();
         }
 
@@ -232,8 +265,9 @@ class KnowledgeGraph {
         // Update positions on tick
         this.simulation.on('tick', () => {
             // Update label positions multiple times per tick to keep them properly repelled
+            // More iterations needed with dynamic collision radii for long titles
             // This creates a "magnetic repulsion" effect where labels push away from each other
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 12; i++) {
                 this.labelSimulation.tick();
             }
 
