@@ -352,6 +352,76 @@ Implemented a separate D3.js force simulation just for labels:
 
 **Location:** `assets/js/knowledge-graph.js` lines 11-12, 123-159, 236-259
 
+---
+
+### Knowledge Graph Label Simulation Force Link Error (SOLVED ✅)
+**Issue:** Graph displayed "Knowledge graph data is being generated" instead of rendering. Console error: "Error: node not found: post-2024-01-01-example-post"
+
+**Root Cause:**
+- Label simulation tried to create forceLink between label nodes and parent nodes
+- Parent nodes (regular post nodes) don't exist in the label simulation
+- D3.js forceLink threw error when looking up node IDs that weren't in the simulation
+- Graph initialization caught the error and showed fallback message
+
+**Solution: Manual Attraction Forces**
+Instead of using forceLink (which requires all linked nodes to exist in same simulation):
+
+1. **Remove forceLink dependency:**
+   ```javascript
+   // OLD (broken):
+   .force('label-link', d3.forceLink(labelLinks)
+       .id(d => d.id)
+       // ...tries to link to nodes not in simulation
+
+   // NEW (works):
+   // No forceLink - manually implement attraction in tick
+   ```
+
+2. **Implement attraction in tick handler:**
+   ```javascript
+   .on('tick', () => {
+       this.labelNodes.forEach(label => {
+           const parentNode = this.nodes.find(n => n.id === label.parentId);
+           if (parentNode) {
+               // Calculate desired distance based on text width
+               const desiredDistance = Math.max(50, label.width / 2 + 30);
+               const distance = Math.sqrt(
+                   Math.pow(label.x - (parentNode.x || 0), 2) +
+                   Math.pow(label.y - (parentNode.y || 0), 2)
+               );
+
+               // Apply attraction force if distance is wrong
+               const strength = 0.15;
+               if (distance > desiredDistance) {
+                   // Too far - pull toward parent
+                   label.vx -= Math.cos(angle) * strength;
+                   label.vy -= Math.sin(angle) * strength;
+               } else if (distance < desiredDistance * 0.7) {
+                   // Too close - push away
+                   label.vx += Math.cos(angle) * strength;
+                   label.vy += Math.sin(angle) * strength;
+               }
+           }
+       });
+   })
+   ```
+
+**How It Works:**
+- Separate force simulation for labels only (no parent nodes needed)
+- Charge force: -450 (repulsion between labels)
+- Collision force: dynamic radius based on text width
+- Attraction: manual velocity adjustment in tick handler
+- No external node references - completely self-contained
+
+**Result:**
+- ✅ Graph renders without errors
+- ✅ All 9 posts visible as nodes
+- ✅ Labels properly spaced (no overlap)
+- ✅ Magnetic repulsion working correctly
+- ✅ Dynamic spacing adapts to title length
+
+**Location:** `assets/js/knowledge-graph.js` lines 166-203
+
 ### Knowledge Graph Baseurl Issue (SOLVED)
 **Issue:** Graph fails to load with "Knowledge graph data is being generated" message on GitHub Pages
 **Root Causes:**
