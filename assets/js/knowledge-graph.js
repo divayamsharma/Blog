@@ -13,8 +13,9 @@ class KnowledgeGraph {
     // Build graph from posts
     async buildGraphFromPosts() {
         try {
-            // Fetch posts data
-            const response = await fetch('/assets/data/posts-graph.json');
+            // Fetch posts data with baseurl support
+            const baseurl = document.documentElement.getAttribute('data-baseurl') || '';
+            const response = await fetch(`${baseurl}/assets/data/posts-graph.json`);
             const data = await response.json();
 
             this.nodes = data.nodes;
