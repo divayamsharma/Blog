@@ -257,6 +257,37 @@ For detailed information, refer to:
 
 ## Known Issues & Solutions
 
+### Knowledge Graph Label Overlap Issue (SOLVED)
+**Issue:** Node labels overlapped when zooming, making names unreadable
+**Root Causes:**
+1. Nodes positioned too close together (collision radius only 30px)
+2. Links too short (100px distance)
+3. No visual separation between overlapping text
+
+**Solution:**
+1. Increase collision detection space:
+   ```javascript
+   .force('collision', d3.forceCollide().radius(65))  // Was 30
+   ```
+2. Spread nodes further apart:
+   ```javascript
+   .distance(180)  // Was 100
+   .strength(0.4)  // Was 0.5
+   ```
+3. Increase repulsion:
+   ```javascript
+   .force('charge', d3.forceManyBody().strength(-400))  // Was -300
+   ```
+4. Add label backgrounds for readability:
+   ```javascript
+   node.append('rect')
+       .attr('width', 80)
+       .attr('height', 24)
+       .attr('fill', 'rgba(0, 0, 0, 0.6)');
+   ```
+
+**Location:** `assets/js/knowledge-graph.js` lines 59-67, 97-117
+
 ### Knowledge Graph Baseurl Issue (SOLVED)
 **Issue:** Graph fails to load with "Knowledge graph data is being generated" message on GitHub Pages
 **Root Causes:**
@@ -302,18 +333,21 @@ For detailed information, refer to:
 
 ## Roadmap & Next Steps
 
-### High Priority Issues
-1. **Graph Node Filtering** - Show only blog posts
-   - Current: Displays posts + tags + categories
-   - Desired: Only posts (no tags like "health", "sleep", "mindset")
+### High Priority Issues (ALL COMPLETED ✅)
+1. **Graph Node Filtering** ✅ - Show only blog posts
+   - Status: DONE - Posts only, no tags or categories displayed
    - File: `scripts/generate-graph-data.js`
-   - Change: Modify node/link generation to exclude tag and category nodes
+   - Implementation: Store tag/category data on posts but don't create separate nodes
 
-2. **Graph Zoom Constraint** - Prevent content from vanishing
-   - Current: Zoom has no limits, nodes disappear at extreme scales
-   - Desired: Constrain zoom with min/max scale factors
+2. **Graph Zoom Constraint** ✅ - Prevent content from vanishing
+   - Status: DONE - Zoom limited to 0.5x to 5x (50-500%)
    - File: `assets/js/knowledge-graph.js` (lines 180-186)
-   - Change: Add scaleExtent() to d3.zoom() initialization
+   - Implementation: Added scaleExtent([0.5, 5]) to d3.zoom()
+
+3. **Label Overlap Prevention** ✅ - Node names overlap when zooming
+   - Status: DONE - Increased spacing + label backgrounds
+   - File: `assets/js/knowledge-graph.js` (lines 59-67, 97-117)
+   - Implementation: Collision radius 30→65, link distance 100→180, label backgrounds
 
 ### Medium Priority Optimizations
 - Add `jekyll-paginate` gem to Gemfile (remove deprecation warning)

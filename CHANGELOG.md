@@ -351,18 +351,57 @@ chmod +x deploy.sh
 
 ---
 
+## [Graph Label Overlap Fixed] - 2025-11-02
+
+### Issue
+Node labels were overlapping, making them unreadable and difficult to distinguish when zooming in the graph.
+
+### Solution Implemented
+
+**1. Increased Physical Spacing Between Nodes**
+- Collision radius: 30 → 65 pixels (more than 2x)
+- Link distance: 100 → 180 pixels (spread nodes 80% further)
+- Repulsion force: -300 → -400 (stronger node pushing)
+- Result: Nodes naturally space out more to avoid collision
+
+**2. Added Label Backgrounds**
+- Semi-transparent dark background (rgba(0,0,0,0.6)) behind all text
+- Rounded corners (4px border-radius)
+- Dark background becomes darker (0.8 opacity) on hover
+- Makes text readable even if slight overlap occurs
+
+**3. Enhanced Typography**
+- Font weight: 500 → 600 (bolder text)
+- Added letter-spacing: 0.5px (better readability)
+- Removed text-shadow (background provides better contrast)
+
+**Files Modified:**
+- `assets/js/knowledge-graph.js` (lines 59-67, 97-117, 139-142, 179-182)
+
+**Result:**
+- No overlapping labels when zooming
+- Better visual hierarchy with background boxes
+- Improved readability across all zoom levels
+- Smooth hover animations on label backgrounds
+
+---
+
 ## Next Steps / Todo List
 
-### High Priority
-- [ ] **Fix Graph Display** - Only show blog posts, remove tags and categories
+### High Priority (COMPLETED ✅)
+- [x] **Fix Graph Display** - Only show blog posts, remove tags and categories
   - Tags like "health", "sleep", "mindset" should not appear as separate nodes
   - Only posts should be visible nodes
   - Files to modify: `scripts/generate-graph-data.js`
 
-- [ ] **Fix Graph Zoom Behavior** - Content vanishes when zooming
+- [x] **Fix Graph Zoom Behavior** - Content vanishes when zooming
   - Zoom goes too far in or out, causing nodes to disappear
   - Need to constrain zoom scale limits
   - Files to modify: `assets/js/knowledge-graph.js` (zoom function)
+
+- [x] **Fix Overlapping Labels** - Node names overlap making them unreadable
+  - Implemented increased spacing + label backgrounds
+  - Files modified: `assets/js/knowledge-graph.js`
 
 ### Medium Priority
 - [ ] Add `jekyll-paginate` gem to Gemfile (fixes deprecation warning)
