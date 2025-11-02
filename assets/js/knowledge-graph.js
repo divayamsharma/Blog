@@ -8,6 +8,8 @@ class KnowledgeGraph {
         this.links = [];
         this.svg = null;
         this.simulation = null;
+        this.labelSimulation = null;
+        this.labelNodes = [];
     }
 
     // Build graph from posts
@@ -95,6 +97,7 @@ class KnowledgeGraph {
             .style('cursor', 'pointer');
 
         // Add label backgrounds for better readability
+        // Position will be updated dynamically by label simulation
         node.append('rect')
             .attr('class', 'label-bg')
             .attr('x', -40)
@@ -103,7 +106,8 @@ class KnowledgeGraph {
             .attr('height', 24)
             .attr('rx', 4)
             .attr('fill', 'rgba(0, 0, 0, 0.6)')
-            .attr('pointer-events', 'none');
+            .attr('pointer-events', 'none')
+            .style('will-change', 'x, y');
 
         // Add labels with better contrast
         node.append('text')
@@ -115,6 +119,44 @@ class KnowledgeGraph {
             .attr('pointer-events', 'none')
             .style('font-weight', 600)
             .style('letter-spacing', '0.5px');
+
+        // Create label nodes for smart positioning with repulsion
+        // These are invisible nodes that represent where labels should be positioned
+        this.labelNodes = this.nodes.map((d, i) => {
+            // Start labels at random offsets around their nodes (like magnetic field)
+            const angle = (Math.PI * 2 * i) / this.nodes.length;
+            const radius = 45;
+            return {
+                id: `label-${d.id}`,
+                parentId: d.id,
+                x: (d.x || 0) + Math.cos(angle) * radius,
+                y: (d.y || 0) + Math.sin(angle) * radius,
+                vx: 0,
+                vy: 0
+            };
+        });
+
+        // Create label links (connecting labels to their parent nodes)
+        const labelLinks = this.labelNodes.map(label => ({
+            source: label.parentId,
+            target: label.id
+        }));
+
+        // Create separate simulation for label positioning
+        // Labels repel each other (like magnets with same poles) but are attracted to their nodes
+        this.labelSimulation = d3.forceSimulation(this.labelNodes)
+            .force('label-charge', d3.forceManyBody().strength(-400)) // VERY strong repulsion - like magnets
+            .force('label-link', d3.forceLink(labelLinks)
+                .id(d => d.id)
+                .distance(45) // Keep labels close to their nodes
+                .strength(0.9)) // Very strong attraction to parent node
+            .force('label-collision', d3.forceCollide().radius(60)) // Aggressive collision prevention
+            .stop(); // Don't auto-tick, we'll update manually
+
+        // Run more initial ticks to get labels into better positions
+        for (let i = 0; i < 150; i++) {
+            this.labelSimulation.tick();
+        }
 
         // Add click handler
         node.on('click', (event, d) => {
@@ -189,13 +231,38 @@ class KnowledgeGraph {
 
         // Update positions on tick
         this.simulation.on('tick', () => {
+            // Update label positions multiple times per tick to keep them properly repelled
+            // This creates a "magnetic repulsion" effect where labels push away from each other
+            for (let i = 0; i < 8; i++) {
+                this.labelSimulation.tick();
+            }
+
             link
                 .attr('x1', d => d.source.x)
                 .attr('y1', d => d.source.y)
                 .attr('x2', d => d.target.x)
                 .attr('y2', d => d.target.y);
 
+            // Update node and label positions
             node.attr('transform', d => `translate(${d.x},${d.y})`);
+
+            // Position labels based on label node positions
+            // Calculate offset from parent node to label node
+            node.each(d => {
+                const labelNode = this.labelNodes.find(ln => ln.parentId === d.id);
+                if (labelNode) {
+                    const offsetX = labelNode.x - (d.x || 0);
+                    const offsetY = labelNode.y - (d.y || 0);
+
+                    d3.select(this).select('.label-bg')
+                        .attr('x', offsetX - 40)
+                        .attr('y', offsetY - 12);
+
+                    d3.select(this).select('text')
+                        .attr('x', offsetX)
+                        .attr('y', offsetY);
+                }
+            });
         });
 
         // Add zoom with constrained scale limits
