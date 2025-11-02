@@ -17,7 +17,10 @@
       "mcp__github__get_file_contents",
       "mcp__github__list_pull_requests",
       "mcp__github__list_commits",
-      "mcp__github__search_repositories"
+      "mcp__github__search_repositories",
+      "mcp__firecrawl__firecrawl_search",
+      "Bash(node -c:*)",
+      "Bash(npm run clean:*)"
     ],
     "deny": [],
     "ask": []

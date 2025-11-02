@@ -58,15 +58,18 @@ class KnowledgeGraph {
             .attr('points', '0 0, 10 3, 0 6')
             .attr('fill', '#666');
 
-        // Create force simulation with increased spacing to prevent label overlap
+        // Create force simulation with strong node repulsion (like Obsidian)
+        // Each node acts as a south pole repelling all other nodes
         this.simulation = d3.forceSimulation(this.nodes)
             .force('link', d3.forceLink(this.links)
                 .id(d => d.id)
-                .distance(180)  // Increased from 100 to spread nodes further apart
-                .strength(0.4))  // Slightly reduced to allow more movement
-            .force('charge', d3.forceManyBody().strength(-400))  // Increased repulsion
+                .distance(180)  // Spread nodes apart
+                .strength(0.3))  // Allow flexible movement
+            .force('charge', d3.forceManyBody()
+                .strength(-800)  // Very strong repulsion - like Obsidian (nodes repel each other)
+                .distanceMax(500))  // Apply repulsion within reasonable range
             .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius(65))  // Increased from 30 to 65 for more space
+            .force('collision', d3.forceCollide().radius(75))  // Prevent node overlap
 
         // Create link elements
         const link = this.svg.selectAll('line')
@@ -96,29 +99,46 @@ class KnowledgeGraph {
             .attr('opacity', 0.8)
             .style('cursor', 'pointer');
 
-        // Add label backgrounds for better readability
-        // Position will be updated dynamically by label simulation
-        node.append('rect')
-            .attr('class', 'label-bg')
-            .attr('x', -40)
-            .attr('y', -12)
-            .attr('width', 80)
-            .attr('height', 24)
-            .attr('rx', 4)
-            .attr('fill', 'rgba(0, 0, 0, 0.6)')
-            .attr('pointer-events', 'none')
-            .style('will-change', 'x, y');
-
-        // Add labels with better contrast
+        // Add labels with text wrapping and center alignment
+        // Remove background box for cleaner look
         node.append('text')
-            .text(d => d.label)
-            .attr('font-size', '11px')
+            .attr('class', 'node-label')
             .attr('text-anchor', 'middle')
             .attr('dy', '.3em')
             .attr('fill', '#fff')
             .attr('pointer-events', 'none')
             .style('font-weight', 600)
-            .style('letter-spacing', '0.5px');
+            .style('letter-spacing', '0.5px')
+            .style('font-size', '11px')
+            .each(function(d) {
+                // Split text into words for wrapping
+                const words = d.label.split(/\s+/);
+                const maxCharsPerLine = 15;
+                let lines = [];
+                let currentLine = '';
+
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).length > maxCharsPerLine && currentLine.length > 0) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine += (currentLine ? ' ' : '') + word;
+                    }
+                });
+                if (currentLine) lines.push(currentLine.trim());
+
+                // Add tspan for each line
+                const textEl = d3.select(this);
+                textEl.selectAll('tspan').remove(); // Clear any existing tspans
+
+                lines.forEach((line, i) => {
+                    const yOffset = (i - (lines.length - 1) / 2) * 1.2;
+                    textEl.append('tspan')
+                        .attr('x', 0)
+                        .attr('dy', i === 0 ? '.3em' : '1.2em')
+                        .text(line);
+                });
+            });
 
         // Measure text dimensions to calculate proper spacing
         // This ensures long titles get enough space
@@ -230,12 +250,8 @@ class KnowledgeGraph {
             d3.select(this).select('text')
                 .transition()
                 .duration(200)
-                .attr('font-size', '13px');
-
-            d3.select(this).select('.label-bg')
-                .transition()
-                .duration(200)
-                .attr('fill', 'rgba(0, 0, 0, 0.8)');
+                .attr('fill', '#fff')
+                .style('font-size', '13px');
 
             // Highlight connected nodes
             link.style('stroke', l => {
@@ -270,12 +286,8 @@ class KnowledgeGraph {
             d3.select(this).select('text')
                 .transition()
                 .duration(200)
-                .attr('font-size', '11px');
-
-            d3.select(this).select('.label-bg')
-                .transition()
-                .duration(200)
-                .attr('fill', 'rgba(0, 0, 0, 0.6)');
+                .attr('fill', '#fff')
+                .style('font-size', '11px');
 
             link.style('stroke', '#333')
                 .style('opacity', 0.6);
@@ -323,10 +335,6 @@ class KnowledgeGraph {
                         finalOffsetY = offsetY * scale;
                     }
 
-                    d3.select(this).select('.label-bg')
-                        .attr('x', finalOffsetX - 40)
-                        .attr('y', finalOffsetY - 12);
-
                     d3.select(this).select('text')
                         .attr('x', finalOffsetX)
                         .attr('y', finalOffsetY);
@@ -334,14 +342,53 @@ class KnowledgeGraph {
             });
         });
 
-        // Add zoom with constrained scale limits
+        // Create zoom layer group for smooth zooming
+        const zoomGroup = this.svg.append('g')
+            .attr('class', 'zoom-group');
+
+        // Move content into zoom group
+        this.svg.selectAll('line, g.node').each(function() {
+            zoomGroup.append(() => this);
+        });
+
+        // Smooth zoom with d3.interpolateZoom (like Obsidian)
         const zoom = d3.zoom()
-            .scaleExtent([0.5, 5]) // Min zoom: 0.5x (50%), Max zoom: 5x (500%)
+            .scaleExtent([0.5, 5])
             .on('zoom', (event) => {
-                this.svg.selectAll('g').attr('transform', event.transform);
+                zoomGroup.attr('transform', event.transform);
             });
 
+        // Smooth zoom transitions
+        let currentTransform = d3.zoomIdentity;
+
         this.svg.call(zoom);
+
+        // Optional: Smooth zooming on double-click to specific node
+        node.on('dblclick', function(event, d) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Smooth zoom and pan to this node
+            if (!d.x || !d.y) return;
+
+            const scale = 2.5;
+            const x = d.x * scale - (width / 2);
+            const y = d.y * scale - (height / 2);
+
+            const interpolation = d3.interpolateZoom(
+                [currentTransform.x, currentTransform.y, currentTransform.k],
+                [x, y, scale]
+            );
+
+            d3.select(this.parentNode.parentNode)
+                .transition()
+                .duration(750)
+                .attrTween('transform', () => t => {
+                    const [x, y, k] = interpolation(t);
+                    currentTransform = d3.zoomIdentity.translate(x, y).scale(k);
+                    return currentTransform;
+                });
+        });
     }
 
     // Detect and fix overlapping labels using brute-force collision detection
