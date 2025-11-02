@@ -206,6 +206,10 @@ class KnowledgeGraph {
             this.labelSimulation.tick();
         }
 
+        // Post-process: Detect and fix any remaining overlaps using proven collision detection
+        // Based on observable.hq collision detection algorithms
+        this.detectAndFixLabelOverlaps(node, textDimensions);
+
         // Add click handler
         node.on('click', (event, d) => {
             if (d.url) {
@@ -322,6 +326,77 @@ class KnowledgeGraph {
             });
 
         this.svg.call(zoom);
+    }
+
+    // Detect and fix overlapping labels using brute-force collision detection
+    // This solves the initial positioning problem where labels overlap on page load
+    detectAndFixLabelOverlaps(nodeSelection, textDimensions) {
+        // Brute-force approach: check all pairs of labels for overlap
+        // If overlap detected, push them apart
+        const maxIterations = 50;
+        const pushStrength = 2;
+
+        for (let iteration = 0; iteration < maxIterations; iteration++) {
+            let hasOverlap = false;
+
+            // Check each pair of labels
+            for (let i = 0; i < this.labelNodes.length; i++) {
+                for (let j = i + 1; j < this.labelNodes.length; j++) {
+                    const labelA = this.labelNodes[i];
+                    const labelB = this.labelNodes[j];
+
+                    // Get bounding box corners for both labels
+                    const boxA = this.getLabelBoundingBox(labelA);
+                    const boxB = this.getLabelBoundingBox(labelB);
+
+                    // Check if boxes overlap
+                    if (this.doBoxesOverlap(boxA, boxB)) {
+                        hasOverlap = true;
+
+                        // Calculate direction from A to B
+                        const dx = labelB.x - labelA.x;
+                        const dy = labelB.y - labelA.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+
+                        // Push them apart
+                        const angle = Math.atan2(dy, dx);
+                        labelA.x -= Math.cos(angle) * pushStrength;
+                        labelA.y -= Math.sin(angle) * pushStrength;
+                        labelB.x += Math.cos(angle) * pushStrength;
+                        labelB.y += Math.sin(angle) * pushStrength;
+                    }
+                }
+            }
+
+            // If no overlaps found, we're done
+            if (!hasOverlap) break;
+        }
+    }
+
+    // Get bounding box for a label node
+    getLabelBoundingBox(labelNode) {
+        const halfWidth = labelNode.width / 2;
+        const halfHeight = labelNode.height / 2;
+
+        return {
+            x0: labelNode.x - halfWidth,
+            x1: labelNode.x + halfWidth,
+            y0: labelNode.y - halfHeight,
+            y1: labelNode.y + halfHeight
+        };
+    }
+
+    // Check if two bounding boxes overlap
+    doBoxesOverlap(boxA, boxB) {
+        // Add padding for safety margin
+        const padding = 8;
+
+        return !(
+            boxA.x1 + padding < boxB.x0 ||
+            boxA.x0 - padding > boxB.x1 ||
+            boxA.y1 + padding < boxB.y0 ||
+            boxA.y0 - padding > boxB.y1
+        );
     }
 
     dragStarted(event, d) {
