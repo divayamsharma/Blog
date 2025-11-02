@@ -208,15 +208,15 @@ After initial overlap fixes, implemented UI/UX improvements to match Obsidian's 
 
 **4. Text Wrapping & Center Alignment**
 - Implemented automatic text wrapping for long titles
-- Split text into multiple lines if > 30 characters per line
+- Split text into multiple lines if > 50 characters per line
 - Added `<tspan>` elements for each line
 - Center-aligned all text lines
 - **Result:** Long titles now wrap and remain readable
 - **Example:**
   ```
   Before: "Building Daily Habits: The Foundation..." (one line, possible overlap)
-  After:  "Building Daily Habits: The
-           Foundation of..." (wrapped, centered)
+  After:  "Building Daily Habits: The Foundation of
+           Self-Improvement" (wrapped, centered)
   ```
 - **Location:** `assets/js/knowledge-graph.js` lines 102-141
 
@@ -253,7 +253,7 @@ let lines = [];
 let currentLine = '';
 
 words.forEach(word => {
-    if ((currentLine + ' ' + word).length > 30 && currentLine.length > 0) {
+    if ((currentLine + ' ' + word).length > 50 && currentLine.length > 0) {
         lines.push(currentLine.trim());
         currentLine = word;
     } else {
@@ -339,7 +339,7 @@ lines.forEach((line, i) => {
 
 ### Known Notes
 
-1. **Text Wrapping Threshold** - Set to 30 characters per line (adjusted from 15)
+1. **Text Wrapping Threshold** - Set to 50 characters per line (adjusted from 30)
    - Can be adjusted if titles need more/less width
    - Location: Line 116 in knowledge-graph.js
 
@@ -359,7 +359,7 @@ lines.forEach((line, i) => {
 
 **Session Status:** ✅ COMPLETE - Graph enhancements deployed and tested
 **Previous Session:** ✅ Label overlap initially fixed (Phase 1)
-**Text Wrapping:** Now set to 30 characters per line for optimal readability
+**Text Wrapping:** Now set to 50 characters per line for optimal readability
 **Next Steps:** Monitor usage and gather feedback on new interactions
 
 ---
